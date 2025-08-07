@@ -11,7 +11,7 @@ interface Project {
   name: string;
   description?: string;
   diagram_data?: string;
-  analysis_count: number;
+  analysis_count?: number;
   last_analysis_at?: string;
   owner_id: number;
   created_at: string;

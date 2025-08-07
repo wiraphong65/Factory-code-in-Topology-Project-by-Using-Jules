@@ -946,5 +946,7 @@ export const useNetworkDiagram = () => {
     setShowProperties,
     setShowEdgeProperties,
     setTempEdgeData,
+    setProjectName,
+    recoverFromBackup,
   };
 }; 

@@ -1,16 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { projectsAPI } from '../services/api';
 import { useAuth } from './AuthContext';
-
-interface Project {
-  id: number;
-  name: string;
-  description?: string;
-  diagram_data?: string;
-  owner_id: number;
-  created_at: string;
-  updated_at?: string;
-}
+import type { Project } from '../types/network';
 
 interface ProjectContextType {
   projects: Project[];
