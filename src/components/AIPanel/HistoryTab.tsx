@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Clock, 
-  Trash2, 
-  Eye, 
+import {
+  Clock,
+  Trash2,
+  Eye,
   Search,
   RefreshCw,
   Archive,
-  AlertCircle
+  AlertCircle,
+  X,
+  Copy,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -30,6 +33,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
   const [selectedResult, setSelectedResult] = useState<string>('');
   const [selectedMetadata, setSelectedMetadata] = useState<any>(null);
   const [resultModalOpen, setResultModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const filteredHistory = historyState.analysisHistory.filter((item: AnalysisHistoryItem) =>
     (item.analysis_result?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
@@ -45,6 +49,17 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
       project_name: currentProject?.name || 'Unknown Project'
     });
     setResultModalOpen(true);
+    setCopied(false); // Reset copy state
+  };
+
+  const handleCopyResult = async () => {
+    try {
+      await navigator.clipboard.writeText(selectedResult);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    } catch (error) {
+      console.error('Failed to copy:', error);
+    }
   };
 
   // No project selected
@@ -79,7 +94,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
               {currentProject.name} • {filteredHistory.length} การวิเคราะห์
             </p>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -90,7 +105,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
               <RefreshCw className={`w-4 h-4 mr-2 ${historyState.historyLoading ? 'animate-spin' : ''}`} />
               รีเฟรช
             </Button>
-            
+
             {filteredHistory.length > 0 && (
               <Button
                 variant="outline"
@@ -136,7 +151,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
                 {searchQuery ? 'ไม่พบผลลัพธ์' : 'ไม่มีประวัติการวิเคราะห์'}
               </h3>
               <p className="text-gray-600 mb-4">
-                {searchQuery 
+                {searchQuery
                   ? `ไม่พบการวิเคราะห์ที่ตรงกับ "${searchQuery}"`
                   : `ยังไม่มีการวิเคราะห์สำหรับ "${currentProject.name}"`
                 }
@@ -175,12 +190,12 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
                             {formatDate(item.created_at || new Date().toISOString())}
                           </span>
                         </div>
-                        
+
                         <p className="text-sm text-gray-700 line-clamp-2 mb-3">
                           {(item.analysis_result || 'ไม่มีเนื้อหาการวิเคราะห์').substring(0, 150)}
                           {(item.analysis_result || '').length > 150 && '...'}
                         </p>
-                        
+
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -237,11 +252,11 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
                   <p className="text-xs text-gray-600">จาก {currentProject.name}</p>
                 </div>
               </div>
-              
+
               <p className="text-sm text-gray-700 mb-4">
-                ต้องการลบการวิเคราะห์นี้? 
+                ต้องการลบการวิเคราะห์นี้?
               </p>
-              
+
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -292,11 +307,11 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
                   <p className="text-xs text-gray-600">จาก {currentProject.name}</p>
                 </div>
               </div>
-              
+
               <p className="text-sm text-gray-700 mb-4">
                 คุณแน่ใจหรือไม่ว่าต้องการลบการวิเคราะห์ทั้งหมด {historyState.analysisHistory.length} รายการ? การกระทำนี้ไม่สามารถยกเลิกได้
               </p>
-              
+
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -334,39 +349,72 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] flex flex-col"
+              className="bg-white rounded-2xl max-w-4xl w-full h-[80vh] flex flex-col shadow-2xl border border-gray-200"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-4 border-b border-gray-100">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-2xl">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900">ผลการวิเคราะห์</h3>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900">ผลการวิเคราะห์</h3>
                     {selectedMetadata && (
-                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-600">
-                        <span>{selectedMetadata.model}</span>
-                        <span>•</span>
-                        <span>{selectedMetadata.device_count} อุปกรณ์</span>
-                        <span>•</span>
-                        <span>{formatDate(selectedMetadata.created_at)}</span>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">โมเดล:</span>
+                          <span>{selectedMetadata.model}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">อุปกรณ์:</span>
+                          <span>{selectedMetadata.device_count} เครื่อง</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">วันที่:</span>
+                          <span>{formatDate(selectedMetadata.created_at)}</span>
+                        </div>
                       </div>
                     )}
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setResultModalOpen(false)}
-                    className="h-6 w-6 p-0"
-                  >
-                    ×
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopyResult}
+                      className="h-8 px-3 bg-white/50 hover:bg-white border-white/50 hover:border-white"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="w-3 h-3 mr-1 text-green-600" />
+                          <span className="text-green-600">คัดลอกแล้ว</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3 mr-1" />
+                          <span>คัดลอก</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setResultModalOpen(false)}
+                      className="h-8 w-8 p-0 hover:bg-white/50 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              <ScrollArea className="flex-1 p-4">
-                <pre className="whitespace-pre-wrap text-xs text-gray-700 leading-relaxed font-mono">
-                  {selectedResult}
-                </pre>
-              </ScrollArea>
+              {/* Content */}
+              <div className="flex-1 overflow-hidden rounded-b-2xl">
+                <div className="h-full overflow-y-auto p-6">
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed font-mono">
+                      {selectedResult}
+                    </pre>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}
