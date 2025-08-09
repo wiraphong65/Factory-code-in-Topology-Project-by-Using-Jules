@@ -93,16 +93,17 @@ const AnalysisTab: React.FC<AnalysisTabProps> = ({
               variant="outline"
               className="w-full justify-between"
               onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
-              disabled={aiPanelState.modelLoading}
+              disabled={aiPanelState.modelLoading || aiPanelState.loading}
             >
               <span className="truncate">
                 {aiPanelState.modelLoading ? 'กำลังโหลด...' : 
+                 aiPanelState.loading ? aiPanelState.currentModel || 'เลือกโมเดล' :
                  aiPanelState.currentModel || 'เลือกโมเดล'}
               </span>
               <ChevronDown className="w-4 h-4" />
             </Button>
 
-            {modelDropdownOpen && (
+            {modelDropdownOpen && !aiPanelState.loading && (
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -154,7 +155,7 @@ const AnalysisTab: React.FC<AnalysisTabProps> = ({
                     aiPanelState.abortController.abort();
                   }
                 }}
-                className="w-full"
+                className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
               >
                 <Square className="w-4 h-4 mr-2" />
                 ยกเลิก

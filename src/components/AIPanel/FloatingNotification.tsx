@@ -13,6 +13,7 @@ interface FloatingNotificationProps {
   elapsedTime: number;
   currentProject: Project | null | undefined;
   onCancel: () => void;
+  onClose: () => void;
   onDragStart: (e: React.MouseEvent) => void;
   onDragEnd: () => void;
   onPositionChange: (position: FloatingPosition) => void;
@@ -26,6 +27,7 @@ const FloatingNotification: React.FC<FloatingNotificationProps> = ({
   elapsedTime,
   currentProject,
   onCancel,
+  onClose,
   onDragStart,
   onDragEnd,
   onPositionChange
@@ -111,7 +113,7 @@ const FloatingNotification: React.FC<FloatingNotificationProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={onCancel}
+              onClick={onClose}
               className="h-5 w-5 p-0"
             >
               <X className="w-3 h-3" />
@@ -130,25 +132,11 @@ const FloatingNotification: React.FC<FloatingNotificationProps> = ({
           )}
 
           <div className="mb-2">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2">
               <Clock className="w-3 h-3 text-gray-500" />
               <span className="text-xs text-gray-700">
                 {formatElapsedTime(elapsedTime)}
               </span>
-            </div>
-            
-            {/* Simple progress bar */}
-            <div className="w-full bg-gray-200 rounded-full h-1">
-              <motion.div
-                className="h-full bg-blue-600 rounded-full"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ 
-                  duration: 30, 
-                  ease: "linear",
-                  repeat: Infinity 
-                }}
-              />
             </div>
           </div>
 

@@ -75,6 +75,9 @@ const AIPanel: React.FC<AIPanelProps> = ({
           aiPanelState.setShowFloatingNotification(false);
         }
       }}
+      onClose={() => {
+        aiPanelState.setShowFloatingNotification(false);
+      }}
       onDragStart={(e) => {
         aiPanelState.setIsDragging(true);
         const rect = e.currentTarget.getBoundingClientRect();

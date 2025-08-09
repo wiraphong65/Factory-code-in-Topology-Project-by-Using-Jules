@@ -206,7 +206,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
                             ดู
                           </Button>
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => historyState.handleDeleteHistoryItem(item)}
                             disabled={historyState.deletingId === item.id}
@@ -278,6 +278,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
               </div>
             </motion.div>
           </motion.div>
+
         )}
       </AnimatePresence>
 
@@ -309,7 +310,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({
               </div>
 
               <p className="text-sm text-gray-700 mb-4">
-                คุณแน่ใจหรือไม่ว่าต้องการลบการวิเคราะห์ทั้งหมด {historyState.analysisHistory.length} รายการ? การกระทำนี้ไม่สามารถยกเลิกได้
+                ต้องการลบการวิเคราะห์ทั้งหมด {historyState.analysisHistory.length} รายการ?
               </p>
 
               <div className="flex gap-2">
